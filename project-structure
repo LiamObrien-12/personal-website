@@ -1,0 +1,28 @@
+personal-website/
+├── src/
+│   ├── components/
+│   │   ├── Navbar.jsx
+│   │   ├── Hero.jsx
+│   │   ├── ProjectCard.jsx
+│   │   ├── Projects.jsx
+│   │   ├── ChatBot.jsx
+│   │   ├── Contact.jsx
+│   │   ├── Footer.jsx
+│   │   ├── BlogPost.jsx
+│   │   ├── ProjectModal.jsx
+│   │   ├── Newsletter.jsx
+│   │   ├── ProjectSearch.jsx
+│   │   └── CustomCursor.jsx
+│   ├── hooks/
+│   │   ├── useInfiniteScroll.js
+│   │   ├── useKeyboardNavigation.js
+│   │   └── useScrollAnimation.js
+│   ├── assets/
+│   │   └── images/
+│   ├── data/
+│   │   └── blogPosts.js
+│   ├── providers/
+│   │   └── ThemeProvider.jsx
+│   └── App.jsx 
+├── public/
+│   └── LiamOBrien_2025_resume.pdf 
