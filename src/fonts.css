@@ -1,0 +1,37 @@
+/* Cooper BT Font */
+@font-face {
+  font-family: 'Cooper BT';
+  src: url('/fonts/CooperBT-Medium.woff2') format('woff2'),
+       url('/fonts/CooperBT-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cooper BT';
+  src: url('/fonts/CooperBT-Regular.woff2') format('woff2'),
+       url('/fonts/CooperBT-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* TT Hoves Pro Font */
+@font-face {
+  font-family: 'TT Hoves Pro';
+  src: url('/fonts/TTHovesPro-Regular.woff2') format('woff2'),
+       url('/fonts/TTHovesPro-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'TT Hoves Pro';
+  src: url('/fonts/TTHovesPro-Medium.woff2') format('woff2'),
+       url('/fonts/TTHovesPro-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+} 

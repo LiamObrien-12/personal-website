@@ -7,11 +7,52 @@ html {
 }
 
 body {
-  @apply bg-[#FDF8F5] text-gray-900;
+  @apply bg-background-light dark:bg-background-dark text-neutral-900 dark:text-neutral-100;
 }
 
-.dark body {
-  @apply bg-gray-900 text-gray-100;
+/* Typography classes */
+h1 {
+  @apply font-cooperbt text-4xl md:text-5xl lg:text-6xl font-medium;
+}
+
+h2 {
+  @apply font-cooperbt text-3xl md:text-4xl lg:text-5xl font-medium;
+}
+
+h3 {
+  @apply font-cooperbt text-2xl md:text-3xl lg:text-4xl font-medium;
+}
+
+h4 {
+  @apply font-cooperbt text-xl md:text-2xl lg:text-3xl font-medium;
+}
+
+h5 {
+  @apply font-cooperbt text-lg md:text-xl lg:text-2xl font-medium;
+}
+
+h6 {
+  @apply font-cooperbt text-base md:text-lg lg:text-xl font-medium;
+}
+
+.s1 {
+  @apply font-tthovespro text-base md:text-xl lg:text-2xl font-normal;
+}
+
+.s2 {
+  @apply font-tthovespro text-base md:text-lg lg:text-xl font-normal;
+}
+
+.b1 {
+  @apply font-tthovespro text-base md:text-lg font-normal;
+}
+
+.b2 {
+  @apply font-tthovespro text-sm md:text-base font-normal;
+}
+
+.label {
+  @apply font-tthovespro text-sm font-normal;
 }
 
 /* Custom scrollbar */
@@ -24,9 +65,34 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-black/10 rounded-full hover:bg-black/20 transition-colors;
+  @apply bg-black/10 dark:bg-white/10 rounded-full hover:bg-black/20 dark:hover:bg-white/20 transition-colors;
 }
 
-.dark ::-webkit-scrollbar-thumb {
-  @apply bg-white/10 hover:bg-white/20;
+/* Animation utilities */
+.animate-opacity {
+  @apply transition-all duration-300 ease-in-out hover:opacity-90;
+}
+
+.animate-underline {
+  @apply transition-all duration-300 ease-in-out underline decoration-primary-500 decoration-2;
+}
+
+.animate-hover-up {
+  @apply transition-all duration-300 ease-in-out hover:-translate-y-1;
+}
+
+.animate-footer-bar {
+  @apply h-20 cursor-pointer pt-16 transition-all duration-200 ease-in-out hover:pt-12;
+}
+
+.animate-footer-circle {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+.animate-footer-circle[data-closed] {
+  @apply translate-y-2 opacity-0;
+}
+
+.animate-work-cell {
+  @apply transition-all duration-500 ease-in-out hover:-translate-y-1 hover:shadow-lg md:hover:-translate-y-2;
 } 
