@@ -45,7 +45,7 @@ export default {
       },
       colors: {
         background: {
-          light: '#FDF8F5',
+          light: '#E0F4FF',
           dark: '#111827'
         },
         primary: {

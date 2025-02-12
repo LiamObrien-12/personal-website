@@ -7,7 +7,7 @@ const technologies = [
   },
   { 
     name: 'C++', 
-    icon: '/icons/cpp.svg'
+    icon: '/icons/cpp-real.svg'
   },
   { 
     name: 'React', 
@@ -106,7 +106,7 @@ export default function Hero() {
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="absolute right-4 top-4 md:right-8 md:top-8"
+        className="absolute right-4 top-20 md:right-8 md:top-24"
       >
         <motion.div 
           animate={{ y: [0, 10, 0] }}

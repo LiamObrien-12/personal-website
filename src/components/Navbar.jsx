@@ -1,71 +1,94 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Logo from './Logo';
 import DarkModeToggle from './DarkModeToggle';
+import ResumeModal from './ResumeModal';
 
 const navigation = [
   { name: 'Work', href: '/' },
-  { name: 'Blog', href: '/blog' },
   { name: 'About', href: '/about' },
-  { name: 'Resume', href: '/LiamOBrien_2025_resume.pdf' },
+  { name: 'Contact', href: '#contact' },
+  { name: 'Resume', href: '#' },
 ];
 
 const socialLinks = [
   { 
     name: 'GitHub', 
-    href: 'https://github.com/your-github-username', 
+    href: 'https://github.com/LiamObrien-12', 
     icon: 'github' 
   },
   { 
     name: 'LinkedIn', 
-    href: 'https://www.linkedin.com/in/your-linkedin-username', 
+    href: 'https://www.linkedin.com/in/liamaobrien', 
     icon: 'linkedin' 
   },
   { 
     name: 'Instagram', 
-    href: 'https://www.instagram.com/your-instagram-username/', 
+    href: 'https://www.instagram.com/lliamobrien/', 
     icon: 'instagram' 
   }
 ];
 
 export default function Navbar() {
-  return (
-    <nav className="fixed w-full top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
-          <div className="flex space-x-8">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className="text-neutral-900 dark:text-neutral-100"
-              >
-                {item.name}
-              </Link>
-            ))}
-          </div>
-          
-          <Link to="/" className="absolute left-1/2 -translate-x-1/2">
-            <Logo />
-          </Link>
+  const [isResumeOpen, setIsResumeOpen] = useState(false);
 
-          <div className="flex items-center space-x-6">
-            <DarkModeToggle />
-            {socialLinks.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-600 hover:text-black transition-colors"
-              >
-                <span className="sr-only">{item.name}</span>
-                <SocialIcon name={item.icon} />
-              </a>
-            ))}
+  const handleNavClick = (e, item) => {
+    if (item.name === 'Resume') {
+      e.preventDefault();
+      setIsResumeOpen(true);
+    } else if (item.href.startsWith('#')) {
+      e.preventDefault();
+      const element = document.querySelector(item.href);
+      element?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  return (
+    <>
+      <nav className="fixed w-full top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16 items-center">
+            <div className="flex space-x-8">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  onClick={(e) => handleNavClick(e, item)}
+                  className="text-neutral-900 dark:text-neutral-100"
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+            
+            <Link to="/" className="absolute left-1/2 -translate-x-1/2">
+              <Logo />
+            </Link>
+
+            <div className="flex items-center space-x-6">
+              <DarkModeToggle />
+              {socialLinks.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-600 hover:text-black transition-colors"
+                >
+                  <span className="sr-only">{item.name}</span>
+                  <SocialIcon name={item.icon} />
+                </a>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+
+      <ResumeModal 
+        isOpen={isResumeOpen} 
+        onClose={() => setIsResumeOpen(false)} 
+      />
+    </>
   );
 }
 

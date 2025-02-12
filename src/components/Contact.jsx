@@ -23,15 +23,15 @@ export default function Contact() {
 
     try {
       await emailjs.send(
-        'YOUR_SERVICE_ID',
-        'YOUR_TEMPLATE_ID',
+        'service_6d8sl84',      // Your service ID
+        'template_3bgxvon',     // Your template ID
         {
           from_name: formData.name,
           from_email: formData.email,
+          message: formData.message,
           to_email: 'liam.aobrien1@gmail.com',
-          message: `${formData.message}\n\n${emailSignature}`,
         },
-        'YOUR_PUBLIC_KEY'
+        '4D4m0k__Wi60l0W1Z'    // Your public key
       );
 
       setStatus('success');
@@ -44,6 +44,7 @@ export default function Contact() {
 
   return (
     <motion.div
+      id="contact"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
