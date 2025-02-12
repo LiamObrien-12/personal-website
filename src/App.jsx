@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import ThemeProvider from './providers/ThemeProvider';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -9,8 +9,16 @@ import Bubbles from './components/Bubbles';
 import Skills from './components/Skills';
 import Experience from './components/Experience';
 import About from './pages/About';
+import ProjectDetail from './pages/ProjectDetail';
+import ContactPage from './pages/Contact';
+import { scrollToTop } from './utils/scrollToTop';
 
 function App() {
+  const handleNavigation = (e, path) => {
+    e.preventDefault();
+    scrollToTop();
+  };
+
   return (
     <BrowserRouter>
       <ThemeProvider>
@@ -18,6 +26,8 @@ function App() {
           <Navbar />
           <Routes>
             <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/project/:id" element={<ProjectDetail />} />
             <Route path="/" element={
               <main>
                 <section id="hero" className="relative">

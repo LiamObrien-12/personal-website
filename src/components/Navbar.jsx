@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Logo from './Logo';
 import DarkModeToggle from './DarkModeToggle';
 import ResumeModal from './ResumeModal';
+import { scrollToTop } from '../utils/scrollToTop';
 
 const navigation = [
-  { name: 'Work', href: '/' },
+  { name: 'Work', href: '#projects' },
   { name: 'About', href: '/about' },
-  { name: 'Contact', href: '#contact' },
+  { name: 'Contact', href: '/contact' },
   { name: 'Resume', href: '#' },
 ];
 
@@ -31,15 +32,37 @@ const socialLinks = [
 
 export default function Navbar() {
   const [isResumeOpen, setIsResumeOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleNavClick = (e, item) => {
+    e.preventDefault();
+    
     if (item.name === 'Resume') {
-      e.preventDefault();
       setIsResumeOpen(true);
+    } else if (item.name === 'Work') {
+      if (location.pathname === '/') {
+        document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        navigate('/');
+        setTimeout(() => {
+          document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
     } else if (item.href.startsWith('#')) {
-      e.preventDefault();
       const element = document.querySelector(item.href);
       element?.scrollIntoView({ behavior: 'smooth' });
+    } else if (item.href === '/contact') {
+      const isHomePage = location.pathname === '/';
+      if (isHomePage) {
+        document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        navigate('/contact');
+        scrollToTop();
+      }
+    } else {
+      navigate(item.href);
+      scrollToTop();
     }
   };
 

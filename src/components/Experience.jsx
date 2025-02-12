@@ -1,22 +1,39 @@
 import { motion } from 'framer-motion';
 
+const fadeInUpVariants = {
+  initial: {
+    opacity: 0,
+    y: 30
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.6, -0.05, 0.01, 0.99]
+    }
+  }
+};
+
 export default function Experience() {
   return (
     <section id="experience" className="py-20 bg-background-light dark:bg-background-dark">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          initial="initial"
+          whileInView="animate"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={fadeInUpVariants}
           className="text-center mb-12"
         >
           <h2 className="text-4xl font-bold text-neutral-900 dark:text-neutral-100">Experience</h2>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          initial="initial"
+          whileInView="animate"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={fadeInUpVariants}
           className="prose dark:prose-invert max-w-3xl mx-auto"
         >
           <p className="text-lg text-neutral-700 dark:text-neutral-300 leading-relaxed">
