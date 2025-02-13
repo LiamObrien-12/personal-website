@@ -12,6 +12,9 @@ import About from './pages/About';
 import ProjectDetail from './pages/ProjectDetail';
 import ContactPage from './pages/Contact';
 import { scrollToTop } from './utils/scrollToTop';
+import HomeContact from './components/HomeContact';
+import BlogPost from './pages/BlogPost';
+import Blog from './components/Blog';
 
 function App() {
   const handleNavigation = (e, path) => {
@@ -28,6 +31,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/project/:id" element={<ProjectDetail />} />
+            <Route path="/blog/:id" element={<BlogPost />} />
             <Route path="/" element={
               <main>
                 <section id="hero" className="relative">
@@ -47,8 +51,12 @@ function App() {
                   <Skills />
                 </section>
 
-                <section id="contact" className="relative">
-                  <Contact />
+                <section id="blog" className="relative">
+                  <Blog />
+                </section>
+
+                <section id="home-contact" className="relative">
+                  <HomeContact />
                 </section>
               </main>
             } />

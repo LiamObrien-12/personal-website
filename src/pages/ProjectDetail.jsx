@@ -1,14 +1,17 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import PageTransition from '../components/PageTransition';
 import { safehavenImages } from '../assets/projects/safehaven';
 import { scrollToTop } from '../utils/scrollToTop';
 import BackToHomeButton from '../components/BackToHomeButton';
+import { portfolioImages } from '../assets/projects/portfolio';
+import { useTheme } from '../providers/ThemeProvider';
 
 const ProjectDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { darkMode } = useTheme();
   
   // We'll move this to a separate data file later
   const projectDetails = {
@@ -113,6 +116,89 @@ const ProjectDetail = () => {
       github: "https://github.com/LiamObrien-12/safehaven",
       live: "https://safehaven-demo.com"
     },
+    portfolio: {
+      title: "Personal Portfolio",
+      subtitle: "A modern, responsive portfolio website built with React and Tailwind CSS",
+      role: {
+        title: "ROLE",
+        items: ["Full-Stack Developer", "UI/UX Designer"]
+      },
+      timeline: {
+        title: "TIMELINE",
+        items: ["2025"]
+      },
+      frontend: {
+        title: "FRONTEND",
+        items: ["React", "Tailwind CSS", "Framer Motion"]
+      },
+      backend: {
+        title: "DEPLOYMENT",
+        items: ["Vercel", "GitHub Actions"]
+      },
+      images: [
+        {
+          url: darkMode ? portfolioImages.home.dark : portfolioImages.home.light,
+          caption: "Homepage with animated hero section and dynamic theme switching"
+        },
+        {
+          url: portfolioImages.contact,
+          caption: "Contact page with animated background and form validation"
+        },
+        {
+          url: portfolioImages.about,
+          caption: "About page with responsive layout and custom animations"
+        }
+      ],
+      description: `
+        This portfolio website was built to showcase my projects and skills in a modern, interactive way. The site 
+        features a clean, minimalist design with smooth animations and transitions powered by Framer Motion. The 
+        dark/light theme switching provides optimal viewing experience in any lighting condition.
+
+        The website is built with React and styled using Tailwind CSS, making it fully responsive across all devices. 
+        Custom animations and transitions were implemented using Framer Motion to create an engaging user experience. 
+        The contact form is integrated with EmailJS for seamless communication.
+
+        Special attention was paid to accessibility and performance, with optimized images and lazy loading implemented 
+        throughout. The site maintains a clean, professional aesthetic while incorporating subtle interactive elements 
+        to engage visitors.
+      `,
+      features: [
+        "Dynamic dark/light theme switching",
+        "Smooth page transitions and animations",
+        "Responsive design for all screen sizes",
+        "Interactive project showcases",
+        "Integrated contact form with EmailJS",
+        "Custom animated components",
+        "Optimized performance and loading",
+        "Accessible navigation and content",
+        "Clean, modern UI design",
+        "Seamless page routing"
+      ],
+      technologies: {
+        title: "TECHNOLOGIES",
+        items: [
+          "React: Frontend Framework",
+          "Tailwind CSS: Styling",
+          "Framer Motion: Animations",
+          "EmailJS: Contact Form",
+          "React Router: Navigation",
+          "Vercel: Deployment"
+        ]
+      },
+      challenges: {
+        title: "CHALLENGES & LEARNINGS",
+        items: [
+          "Animation optimization: Balancing smooth animations with performance",
+          "Theme implementation: Creating a seamless dark/light mode transition",
+          "Responsive design: Ensuring consistent experience across devices",
+          "Form validation: Implementing robust error handling",
+          "Code organization: Maintaining clean, modular component structure",
+          "Performance: Optimizing load times and animations"
+        ]
+      },
+      github: "https://github.com/LiamObrien-12/personal-website",
+      live: "https://liamaobrien.com"
+    },
     // Add more projects here
   };
 
@@ -135,93 +221,82 @@ const ProjectDetail = () => {
   const ImageCarousel = ({ images }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
-    
+
+    // Auto-switching functionality
     useEffect(() => {
       if (!isPaused) {
         const timer = setInterval(() => {
-          setCurrentIndex((prevIndex) => 
-            prevIndex === images.length - 1 ? 0 : prevIndex + 1
-          );
+          setCurrentIndex((prev) => (prev + 1) % images.length);
         }, 4000);
 
         return () => clearInterval(timer);
       }
     }, [images.length, isPaused]);
 
-    const nextSlide = () => {
-      setCurrentIndex((prevIndex) => 
-        prevIndex === images.length - 1 ? 0 : prevIndex + 1
-      );
+    const next = () => {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
     };
 
-    const prevSlide = () => {
-      setCurrentIndex((prevIndex) => 
-        prevIndex === 0 ? images.length - 1 : prevIndex - 1
-      );
+    const prev = () => {
+      setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
     };
 
     return (
       <div 
-        className="relative max-w-2xl mx-auto flex flex-col items-center"
+        className="relative w-full"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
-        <div className="relative flex flex-col items-center justify-center min-h-[600px]">
-          <motion.div
-            key={currentIndex}
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -10 }}
-            transition={{ 
-              duration: 0.7,
-              ease: [0.4, 0, 0.2, 1], // Smooth easing function
-              opacity: { duration: 0.5 },
-              x: { duration: 0.5 }
-            }}
-            className="rounded-xl overflow-hidden shadow-lg max-w-[280px]"
-          >
-            <motion.img
-              src={images[currentIndex].url}
-              alt={images[currentIndex].caption}
-              className="w-full h-auto object-contain"
-              initial={{ scale: 1.05 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
-            />
-          </motion.div>
-          <motion.p
-            key={`caption-${currentIndex}`}
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-center text-neutral-600 dark:text-neutral-400 italic mt-4 max-w-md"
-          >
-            {images[currentIndex].caption}
-          </motion.p>
+        <div className="overflow-hidden rounded-xl aspect-[16/9] max-w-5xl mx-auto">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentIndex}
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -100 }}
+              transition={{ duration: 0.3 }}
+              className="relative w-full h-full"
+            >
+              <img
+                src={images[currentIndex].url}
+                alt={images[currentIndex].caption}
+                className="w-full h-full object-contain bg-neutral-100 dark:bg-neutral-800"
+              />
+              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/60 to-transparent text-white">
+                <p className="text-sm md:text-base opacity-90">
+                  {images[currentIndex].caption}
+                </p>
+              </div>
+            </motion.div>
+          </AnimatePresence>
         </div>
 
         <button
-          onClick={prevSlide}
-          className="absolute left-0 top-1/2 -translate-y-1/2 p-2 bg-neutral-900 dark:bg-neutral-100 text-neutral-100 dark:text-neutral-900 rounded-full hover:bg-neutral-700 dark:hover:bg-neutral-200 transition-all duration-300 hover:scale-110"
+          onClick={prev}
+          className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/20 backdrop-blur-sm hover:bg-black/40 transition-colors"
         >
-          ←
+          <span className="sr-only">Previous</span>
+          <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
         </button>
         <button
-          onClick={nextSlide}
-          className="absolute right-0 top-1/2 -translate-y-1/2 p-2 bg-neutral-900 dark:bg-neutral-100 text-neutral-100 dark:text-neutral-900 rounded-full hover:bg-neutral-700 dark:hover:bg-neutral-200 transition-all duration-300 hover:scale-110"
+          onClick={next}
+          className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/20 backdrop-blur-sm hover:bg-black/40 transition-colors"
         >
-          →
+          <span className="sr-only">Next</span>
+          <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
         </button>
 
-        <div className="flex justify-center gap-2 mt-2">
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
           {images.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                index === currentIndex 
-                  ? 'bg-neutral-900 dark:bg-neutral-100 scale-125' 
-                  : 'bg-neutral-300 dark:bg-neutral-700 hover:scale-110'
+              className={`w-3 h-3 rounded-full transition-colors ${
+                index === currentIndex ? 'bg-white' : 'bg-white/50 hover:bg-white/70'
               }`}
             />
           ))}
@@ -234,6 +309,16 @@ const ProjectDetail = () => {
     e.preventDefault();
     navigate('/');
     scrollToTop();
+  };
+
+  const handleLiveDemo = (e) => {
+    e.preventDefault();
+    if (id === 'portfolio') {
+      navigate('/');
+      scrollToTop();
+    } else {
+      window.open(projectDetails[id].live, '_blank');
+    }
   };
 
   return (
@@ -307,14 +392,12 @@ const ProjectDetail = () => {
               >
                 View on GitHub
               </a>
-              <a
-                href={project.live}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={handleLiveDemo}
                 className="px-6 py-3 border border-neutral-900 dark:border-neutral-100 text-neutral-900 dark:text-neutral-100 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
               >
                 Live Demo
-              </a>
+              </button>
             </motion.div>
           </div>
         </div>

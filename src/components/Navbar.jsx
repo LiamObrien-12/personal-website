@@ -7,6 +7,7 @@ import { scrollToTop } from '../utils/scrollToTop';
 
 const navigation = [
   { name: 'Work', href: '#projects' },
+  { name: 'Blog', href: '#blog' },
   { name: 'About', href: '/about' },
   { name: 'Contact', href: '/contact' },
   { name: 'Resume', href: '#' },
@@ -40,25 +41,14 @@ export default function Navbar() {
     
     if (item.name === 'Resume') {
       setIsResumeOpen(true);
-    } else if (item.name === 'Work') {
-      if (location.pathname === '/') {
-        document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' });
-      } else {
+    } else if (item.href.startsWith('#')) {
+      if (location.pathname !== '/') {
         navigate('/');
         setTimeout(() => {
-          document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' });
+          document.querySelector(item.href)?.scrollIntoView({ behavior: 'smooth' });
         }, 100);
-      }
-    } else if (item.href.startsWith('#')) {
-      const element = document.querySelector(item.href);
-      element?.scrollIntoView({ behavior: 'smooth' });
-    } else if (item.href === '/contact') {
-      const isHomePage = location.pathname === '/';
-      if (isHomePage) {
-        document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
       } else {
-        navigate('/contact');
-        scrollToTop();
+        document.querySelector(item.href)?.scrollIntoView({ behavior: 'smooth' });
       }
     } else {
       navigate(item.href);
@@ -77,7 +67,7 @@ export default function Navbar() {
                   key={item.name}
                   to={item.href}
                   onClick={(e) => handleNavClick(e, item)}
-                  className="text-neutral-900 dark:text-neutral-100"
+                  className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 transition-colors"
                 >
                   {item.name}
                 </Link>

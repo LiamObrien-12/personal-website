@@ -23,15 +23,15 @@ export default function Contact() {
 
     try {
       await emailjs.send(
-        'service_6d8sl84',      // Your service ID
-        'template_3bgxvon',     // Your template ID
+        'service_6d8sl84',
+        'template_3bgxvon',
         {
           from_name: formData.name,
           from_email: formData.email,
           message: formData.message,
           to_email: 'liam.aobrien1@gmail.com',
         },
-        '4D4m0k__Wi60l0W1Z'    // Your public key
+        '4D4m0k__Wi60l0W1Z'
       );
 
       setStatus('success');
@@ -44,13 +44,14 @@ export default function Contact() {
 
   return (
     <motion.div
-      id="contact"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       className="max-w-4xl mx-auto px-4 py-16"
     >
-      <h2 className="text-3xl font-bold mb-8 text-center">Get in Touch</h2>
+      <h2 className="text-4xl font-bold text-neutral-900 dark:text-neutral-100 mb-6 text-center">
+        Get in Contact!
+      </h2>
       
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
@@ -100,7 +101,7 @@ export default function Contact() {
           disabled={status === 'sending'}
           className="w-full py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50"
         >
-          {status === 'sending' ? 'Sending...' : 'Send Message'}
+          {status === 'sending' ? 'Sending...' : 'Connect'}
         </button>
 
         {status === 'success' && (
