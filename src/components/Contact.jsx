@@ -101,7 +101,7 @@ export default function Contact() {
           disabled={status === 'sending'}
           className="w-full py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50"
         >
-          {status === 'sending' ? 'Sending...' : 'Connect'}
+          {status === 'sending' ? 'Sending...' : 'Send Message'}
         </button>
 
         {status === 'success' && (

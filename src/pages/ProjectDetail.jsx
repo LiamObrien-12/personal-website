@@ -13,6 +13,10 @@ const ProjectDetail = () => {
   const navigate = useNavigate();
   const { darkMode } = useTheme();
   
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // We'll move this to a separate data file later
   const projectDetails = {
     safehaven: {
