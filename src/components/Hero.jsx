@@ -22,10 +22,32 @@ const technologies = [
 export default function Hero() {
   return (
     <div className="relative flex flex-col justify-center min-h-screen px-4 overflow-hidden">
-      <div className="flex flex-col mx-auto gap-6 lg:gap-8 text-center max-w-3xl">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.2
+            }
+          }
+        }}
+        className="flex flex-col mx-auto gap-6 lg:gap-8 text-center max-w-3xl"
+      >
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 50 },
+            visible: {
+              opacity: 1,
+              y: 0,
+              transition: {
+                duration: 0.8,
+                ease: [0.6, -0.05, 0.01, 0.99]
+              }
+            }
+          }}
           className="flex flex-col gap-2"
         >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-neutral-900 dark:text-neutral-100">
@@ -58,9 +80,17 @@ export default function Hero() {
         </motion.div>
         
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          variants={{
+            hidden: { opacity: 0, y: 50 },
+            visible: {
+              opacity: 1,
+              y: 0,
+              transition: {
+                duration: 0.8,
+                ease: [0.6, -0.05, 0.01, 0.99]
+              }
+            }
+          }}
           className="flex flex-col items-center gap-4"
         >
           <p className="text-lg text-neutral-600 dark:text-neutral-400">
@@ -70,9 +100,17 @@ export default function Hero() {
             {technologies.map((tech, index) => (
               <motion.div
                 key={tech.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 + index * 0.1 }}
+                variants={{
+                  hidden: { opacity: 0, y: 50 },
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    transition: {
+                      duration: 0.8,
+                      ease: [0.6, -0.05, 0.01, 0.99]
+                    }
+                  }
+                }}
                 className="flex flex-col items-center gap-2"
               >
                 <div className="w-10 h-10 md:w-12 md:h-12">
@@ -89,7 +127,7 @@ export default function Hero() {
             ))}
           </div>
         </motion.div>
-      </div>
+      </motion.div>
 
       {/* Floating bubbles - reduced size and contained within viewport */}
       <motion.div 

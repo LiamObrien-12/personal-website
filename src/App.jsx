@@ -39,12 +39,12 @@ function App() {
                   <Bubbles />
                 </section>
                 
-                <section id="projects" className="relative">
-                  <Projects />
-                </section>
-
                 <section id="experience" className="relative">
                   <Experience />
+                </section>
+
+                <section id="projects" className="relative">
+                  <Projects />
                 </section>
 
                 <section id="skills" className="relative">

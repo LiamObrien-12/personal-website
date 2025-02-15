@@ -103,7 +103,7 @@ export default function Contact() {
         >
           {status === 'sending' ? 'Sending...' : 'Send Message'}
         </button>
-
+        
         {status === 'success' && (
           <p className="text-green-600 text-center">Message sent successfully!</p>
         )}

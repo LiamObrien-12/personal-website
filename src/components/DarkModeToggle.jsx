@@ -7,14 +7,14 @@ export default function DarkModeToggle() {
   return (
     <button
       onClick={toggleDarkMode}
-      className="relative rounded-full w-12 h-7 bg-neutral-200 dark:bg-neutral-700 transition-all duration-300 ease-in-out"
+      className="relative rounded-full w-12 h-7 bg-gray-300 dark:bg-neutral-700 transition-all duration-300 ease-in-out"
       aria-label="Toggle dark mode"
     >
       <motion.div
         initial={false}
         animate={{
           x: darkMode ? 24 : 2,
-          backgroundColor: darkMode ? '#ffffff' : '#000000'
+          backgroundColor: darkMode ? '#ffffff' : '#ffffff'
         }}
         transition={{ 
           type: "spring", 

@@ -6,7 +6,7 @@ import ResumeModal from './ResumeModal';
 import { scrollToTop } from '../utils/scrollToTop';
 
 const navigation = [
-  { name: 'Work', href: '#projects' },
+  { name: 'Projects', href: '#projects' },
   { name: 'Blog', href: '#blog' },
   { name: 'About', href: '/about' },
   { name: 'Contact', href: '/contact' },
