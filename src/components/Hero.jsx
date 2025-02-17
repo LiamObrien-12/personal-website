@@ -50,8 +50,20 @@ export default function Hero() {
           }}
           className="flex flex-col gap-2"
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-neutral-900 dark:text-neutral-100">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-neutral-900 dark:text-neutral-100 flex items-center justify-center gap-2">
             Hi. I'm Liam.
+            <motion.span
+              whileHover={{ 
+                rotate: [0, 15, -15, 0],
+                transition: { 
+                  duration: 1.5,
+                  ease: "easeInOut"
+                }
+              }}
+              className="cursor-pointer"
+            >
+              👋🏻
+            </motion.span>
           </h1>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neutral-900 dark:text-neutral-100">
             Software Engineer & Developer
@@ -129,55 +141,23 @@ export default function Hero() {
         </motion.div>
       </motion.div>
 
-      {/* Floating bubbles - reduced size and contained within viewport */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="absolute left-4 bottom-4 md:left-8 md:bottom-8"
-      >
-        <div className="relative w-[60px] h-[100px] md:w-[120px] md:h-[180px]">
-          <motion.div 
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 4, repeat: Infinity }}
-            className="absolute top-0 left-[40%] w-[8px] h-[8px] md:w-[16px] md:h-[16px] bg-primary-200 dark:bg-primary-800 rounded-full"
-          />
-          <motion.div 
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 3, repeat: Infinity }}
-            className="absolute top-[25%] left-[25%] w-[12px] h-[12px] md:w-[24px] md:h-[24px] bg-primary-300 dark:bg-primary-700 rounded-full"
-          />
-          <motion.div 
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 5, repeat: Infinity }}
-            className="absolute top-[45%] left-[60%] w-[16px] h-[16px] md:w-[32px] md:h-[32px] bg-primary-400 dark:bg-primary-600 rounded-full"
-          />
-          <motion.div 
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 4, repeat: Infinity }}
-            className="absolute bottom-0 left-[0px] w-[24px] h-[24px] md:w-[48px] md:h-[48px] bg-primary-500 dark:bg-primary-500 rounded-full"
-          />
-        </div>
-      </motion.div>
-
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="absolute right-4 top-20 md:right-8 md:top-24"
-      >
-        <motion.div 
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 4, repeat: Infinity }}
-          className="flex items-center justify-center w-[60px] h-[60px] md:w-[120px] md:h-[120px] bg-primary-200 dark:bg-primary-600 rounded-full"
+      {/* Replace bubbles with subtle gradient shapes */}
+      <div className="absolute inset-0 -z-10">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="absolute inset-0"
         >
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-2xl md:text-4xl"
-          >
-            👋🏻
-          </motion.p>
+          {/* Top right gradient */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-primary-200/20 dark:from-primary-800/20 to-transparent rounded-full blur-3xl" />
+          
+          {/* Bottom left gradient */}
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-primary-300/20 dark:from-primary-700/20 to-transparent rounded-full blur-3xl" />
+          
+          {/* Center subtle accent */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-primary-200/10 dark:from-primary-800/10 to-transparent rounded-full blur-2xl" />
         </motion.div>
-      </motion.div>
+      </div>
     </div>
   );
 } 

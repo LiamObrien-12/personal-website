@@ -15,6 +15,7 @@ import { scrollToTop } from './utils/scrollToTop';
 import HomeContact from './components/HomeContact';
 import BlogPost from './pages/BlogPost';
 import Blog from './components/Blog';
+import DrawingCanvas from './components/DrawingCanvas';
 
 function App() {
   const handleNavigation = (e, path) => {
@@ -49,6 +50,10 @@ function App() {
 
                 <section id="skills" className="relative">
                   <Skills />
+                </section>
+
+                <section id="ui" className="relative">
+                  <DrawingCanvas />
                 </section>
 
                 <section id="blog" className="relative">
