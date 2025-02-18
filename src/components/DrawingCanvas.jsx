@@ -1,5 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { fetchDrawings, saveDrawing as saveDrawingApi, deleteDrawing } from '../services/api';
+import AdminLogin from './AdminLogin';
 
 const COLORS = [
   '#000000', // Black
@@ -21,10 +23,7 @@ export default function DrawingCanvas() {
   const canvasRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [context, setContext] = useState(null);
-  const [drawings, setDrawings] = useState(() => {
-    const savedDrawings = localStorage.getItem('drawings');
-    return savedDrawings ? JSON.parse(savedDrawings) : [];
-  });
+  const [drawings, setDrawings] = useState([]);
   const [currentColor, setCurrentColor] = useState('#000000');
   const [artistName, setArtistName] = useState('');
   const [showNameError, setShowNameError] = useState(false);
@@ -32,6 +31,13 @@ export default function DrawingCanvas() {
   const canvasContainerRef = useRef(null);
   const [currentLineSize, setCurrentLineSize] = useState(4);
   const [canvasState, setCanvasState] = useState(null);
+  const [drawingHistory, setDrawingHistory] = useState([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  const [currentDrawingIndex, setCurrentDrawingIndex] = useState(0);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -70,8 +76,16 @@ export default function DrawingCanvas() {
   }, [currentColor, currentLineSize]);
 
   useEffect(() => {
-    localStorage.setItem('drawings', JSON.stringify(drawings));
-  }, [drawings]);
+    const loadDrawings = async () => {
+      try {
+        const fetchedDrawings = await fetchDrawings();
+        setDrawings(fetchedDrawings);
+      } catch (error) {
+        console.error('Failed to load drawings:', error);
+      }
+    };
+    loadDrawings();
+  }, []);
 
   const drawDot = (x, y) => {
     context.beginPath();
@@ -119,11 +133,18 @@ export default function DrawingCanvas() {
     updateCursorPosition(e);
   };
 
+  const saveToHistory = () => {
+    const imageData = canvasRef.current.toDataURL();
+    setDrawingHistory(prev => [...prev.slice(0, historyIndex + 1), imageData]);
+    setHistoryIndex(prev => prev + 1);
+  };
+
   const stopDrawing = () => {
     if (isDrawing) {
       context.closePath();
       setIsDrawing(false);
       setCanvasState(canvasRef.current.toDataURL());
+      saveToHistory();
     }
   };
 
@@ -147,31 +168,114 @@ export default function DrawingCanvas() {
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     setCanvasState(null);
+    setHistoryIndex(-1);
+    setDrawingHistory([]);
   };
 
-  const saveDrawing = () => {
+  const saveDrawing = async () => {
     if (!artistName.trim()) {
       setShowNameError(true);
       return;
     }
-    setShowNameError(false);
-    const imageData = canvasRef.current.toDataURL();
-    const newDrawing = { 
-      image: imageData, 
-      artist: artistName.trim(),
-      date: new Date().toISOString() // Optional: add date for sorting/display
-    };
     
-    setDrawings(prev => [...prev, newDrawing]);
-    clearCanvas();
-    setArtistName('');
+    try {
+      const imageData = canvasRef.current.toDataURL();
+      const newDrawing = await saveDrawingApi({
+        image: imageData,
+        artist: artistName.trim()
+      });
+      
+      setDrawings(prev => [newDrawing, ...prev]);
+      clearCanvas();
+      setArtistName('');
+    } catch (error) {
+      console.error('Failed to save drawing:', error);
+      // Optionally add error handling UI
+    }
   };
 
   const clearAllDrawings = () => {
     if (window.confirm('Are you sure you want to clear all drawings?')) {
       setDrawings([]);
-      localStorage.removeItem('drawings');
     }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this drawing?')) {
+      try {
+        await deleteDrawing(id);
+        setDrawings(prev => prev.filter(drawing => drawing._id !== id));
+      } catch (error) {
+        console.error('Failed to delete drawing:', error);
+      }
+    }
+  };
+
+  const undo = () => {
+    if (historyIndex > 0) {
+      const newIndex = historyIndex - 1;
+      const imageData = drawingHistory[newIndex];
+      const img = new Image();
+      img.onload = () => {
+        context.fillStyle = '#FFFFFF';
+        context.fillRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+        context.drawImage(img, 0, 0);
+        setCanvasState(imageData);
+      };
+      img.src = imageData;
+      setHistoryIndex(newIndex);
+    } else {
+      // If no history, clear canvas
+      clearCanvas();
+      setHistoryIndex(-1);
+      setDrawingHistory([]);
+    }
+  };
+
+  // Add navigation functions
+  const nextDrawing = () => {
+    setCurrentDrawingIndex((prev) => 
+      prev === drawings.length - 1 ? 0 : prev + 1
+    );
+  };
+
+  const previousDrawing = () => {
+    setCurrentDrawingIndex((prev) => 
+      prev === 0 ? drawings.length - 1 : prev - 1
+    );
+  };
+
+  const handleTouchStart = (e) => {
+    setTouchStart(e.touches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      nextDrawing();
+    }
+
+    if (isRightSwipe) {
+      previousDrawing();
+    }
+
+    // Reset values
+    setTouchStart(null);
+    setTouchEnd(null);
+  };
+
+  const handleAdminLogin = () => {
+    setIsAdmin(true);
+    setShowAdminLogin(false);
   };
 
   return (
@@ -189,10 +293,10 @@ export default function DrawingCanvas() {
           </p>
         </motion.div>
 
-        <div className="flex flex-col items-center gap-8">
+        <div className="flex flex-col lg:flex-row items-start justify-center gap-8">
           <div 
             ref={canvasContainerRef}
-            className="relative bg-white dark:bg-neutral-800 rounded-lg shadow-lg p-4"
+            className="relative bg-white dark:bg-neutral-800 rounded-lg shadow-lg p-4 min-w-[400px]"
           >
             <div className="relative">
               <canvas
@@ -294,6 +398,15 @@ export default function DrawingCanvas() {
             {/* Action buttons */}
             <div className="flex justify-center gap-4">
               <button
+                onClick={undo}
+                disabled={historyIndex < 0}
+                className="px-4 py-2 bg-neutral-200 dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 rounded-lg 
+                  hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors
+                  disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Undo
+              </button>
+              <button
                 onClick={clearCanvas}
                 className="px-4 py-2 bg-neutral-200 dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors"
               >
@@ -309,48 +422,105 @@ export default function DrawingCanvas() {
           </div>
 
           {drawings.length > 0 && (
-            <div className="w-full max-w-4xl">
+            <div className="w-full lg:w-[400px]">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-xl font-bold text-neutral-900 dark:text-neutral-100">
                   Saved Drawings
                 </h3>
-                <button
-                  onClick={clearAllDrawings}
-                  className="px-4 py-2 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-                >
-                  Clear All
-                </button>
+                <div className="flex gap-2">
+                  {!isAdmin ? (
+                    <button
+                      onClick={() => setShowAdminLogin(true)}
+                      className="px-4 py-2 text-sm bg-neutral-200 dark:bg-neutral-700 
+                        text-neutral-900 dark:text-neutral-100 rounded-lg 
+                        hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors"
+                    >
+                      Admin Login
+                    </button>
+                  ) : (
+                    <button
+                      onClick={clearAllDrawings}
+                      className="px-4 py-2 text-sm bg-red-500 text-white rounded-lg 
+                        hover:bg-red-600 transition-colors"
+                    >
+                      Clear All
+                    </button>
+                  )}
+                </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {drawings.map((drawing, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg p-4"
+              
+              <div className="relative bg-neutral-900 rounded-lg shadow-lg p-4">
+                <div 
+                  className="relative aspect-square"
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                >
+                  <img
+                    src={drawings[currentDrawingIndex].image}
+                    alt={`Drawing ${currentDrawingIndex + 1}`}
+                    className="w-full h-full object-contain rounded-lg"
+                    draggable="false"
+                  />
+                  <button
+                    onClick={previousDrawing}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
                   >
-                    <img
-                      src={drawing.image}
-                      alt={`Drawing ${index + 1}`}
-                      className="w-full h-auto rounded-lg"
+                    ←
+                  </button>
+                  <button
+                    onClick={nextDrawing}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+                  >
+                    →
+                  </button>
+                  {isAdmin && (
+                    <button
+                      onClick={() => handleDelete(drawings[currentDrawingIndex]._id)}
+                      className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full 
+                        hover:bg-red-600 transition-colors"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+                <div className="mt-2 flex justify-between items-center text-neutral-400">
+                  <p className="text-sm">
+                    by: {drawings[currentDrawingIndex].artist}
+                  </p>
+                  {drawings[currentDrawingIndex].date && (
+                    <p className="text-xs">
+                      {new Date(drawings[currentDrawingIndex].date).toLocaleDateString()}
+                    </p>
+                  )}
+                </div>
+                <div className="mt-2 flex justify-center">
+                  {drawings.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentDrawingIndex(index)}
+                      className={`w-2 h-2 mx-1 rounded-full transition-colors ${
+                        index === currentDrawingIndex 
+                          ? 'bg-white' 
+                          : 'bg-neutral-600 hover:bg-neutral-400'
+                      }`}
                     />
-                    <div className="mt-2 flex justify-between items-center">
-                      <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                        by: {drawing.artist}
-                      </p>
-                      {drawing.date && (
-                        <p className="text-xs text-neutral-400 dark:text-neutral-500">
-                          {new Date(drawing.date).toLocaleDateString()}
-                        </p>
-                      )}
-                    </div>
-                  </motion.div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           )}
         </div>
       </div>
+
+      {showAdminLogin && (
+        <AdminLogin
+          onLogin={handleAdminLogin}
+          onClose={() => setShowAdminLogin(false)}
+        />
+      )}
     </section>
   );
 } 
