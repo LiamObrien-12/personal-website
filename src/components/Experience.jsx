@@ -4,7 +4,7 @@ import { useState } from 'react';
 const timelineData = {
   education: [
     {
-      date: 'Jan 2023 - Dec 2025',
+      date: 'Jan 2023 - May 2025',
       institution: 'Southern New Hampshire University',
       title: 'Bachelor of Science in Computer Science',
     }
